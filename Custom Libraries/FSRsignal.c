@@ -9,6 +9,7 @@ uint8_t SignalClassify(void)
 	time1 = millis();
 	while(ReadADC(FSR1) >= Threshold1) 
 	{
+		delay(1);
 	}
 	time2 = millis();
 
@@ -32,12 +33,14 @@ uint8_t SignalClassify(void)
 uint8_t SignalDetection(void)
 {
 	uint8_t Signal1 = 0, Signal2 = 0, Signal3 = 0;
-	volatile uint8_t FinalSignal = 0;
+	uint8_t FinalSignal = 0;
 	uint32_t t1 = 0, t2 = 0, t3 = 0, t4 = 0;
 	
 	Signal1 = SignalClassify();										// First High
+
 	if(Signal1)
 	{
+		delay(10);
 		t1 = millis();							
 		while(ReadADC(FSR1) < Threshold1)				 		// Check for Low
 		{
@@ -58,7 +61,7 @@ uint8_t SignalDetection(void)
 		}
 	}
 	
-	if(FinalSignal ==  11)													// Checking for Short-Short-Short
+	if(FinalSignal == 11)													// Checking for Short-Short-Short
 	{
 		t3 = millis();
 		while(ReadADC(FSR1) < Threshold1)							// Check for Low
@@ -117,6 +120,7 @@ void PrintSignal(int8_t signalValue)
 	
 uint8_t ProportionalControl(int8_t makeGrip)
 {
+	UARTprintf("\n Proportinal active");
 	uint16_t nowADC, lastADC;
 	nowADC = lastADC = 0;
 	bool transition = false;
@@ -125,7 +129,7 @@ uint8_t ProportionalControl(int8_t makeGrip)
 		while(1)
 		{
 			nowADC = ReadADC(FSR1);
-			
+			//UARTprintf("\n%d",nowADC);
 			//nowADC > Threshold1 ? GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_2,GPIO_PIN_2) : GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_2,0x00);
 			
 			if(nowADC > lastADC && nowADC > Threshold1 && lastADC < Threshold1 && transition == false) // start timer for signal rise
@@ -149,7 +153,7 @@ uint8_t ProportionalControl(int8_t makeGrip)
 			
 			if(nowADC > Threshold1 && Ptime2 > Ptime1 && Ptime21 > Proportion_durBegin && transition == true)	// Proportional detection
 			{
-				UARTprintf("\n Proportional detected");
+				//UARTprintf("\n Proportional detected");
 				ProportionalGrip(makeGrip, curl, nowADC);
 			}
 			

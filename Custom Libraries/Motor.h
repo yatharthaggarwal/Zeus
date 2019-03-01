@@ -25,7 +25,7 @@
 #define M2DirPin PA6
 #define M3DirPin PA7
 #define M4DirPin PE5
-#define M5DirPin PD7
+#define M5DirPin PD1
 
 #define M1PWMPin PB7
 #define M2PWMPin PC5
@@ -47,7 +47,7 @@
 
 typedef enum
 {
-	PB6,	PA6,	PA7,	PE5,	PD7
+	PB6,	PA6,	PA7,	PE5,	PD1
 }Phase;
 
 typedef enum

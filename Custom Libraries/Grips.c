@@ -1,71 +1,55 @@
 #include "Grips.h"
 
 struct gripName grips[10] = {//Gripname							Thumb		Index		Middle		Ring		Pinky			ThumbS`		IndexS	 MiddleS		 RingS		PinkyS
-														{"Rest Opposed Grip", 		100,		100,		100,		100,			100,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
+														{"Rest Opposed Grip", 		100,		100,		100,		100,			100,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE},
 														{"Power Grip", 						900,		900,		900,		900,			900,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE},
-														{"Tripod Grip", 					100,		100,		100,		100,			100,		ACTIVE,		ACTIVE,		ACTIVE,	INACTIVE,	INACTIVE},
+														{"Tripod Grip", 				 1000,		100,		100,		100,			100,		ACTIVE,		ACTIVE,		ACTIVE,	INACTIVE,	INACTIVE},
 														{"Active Index Grip", 		100,		100,		100,		100,			100,	INACTIVE,		ACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
-														{"Precision Open Grip", 	100,		100,		100,		100,			100,		ACTIVE,		ACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
+														{"Precision Open Grip",   100,		100,		100,		100,			100,		ACTIVE,		ACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
 														{"Rest Non-Opposed Grip", 100,		100,		100,		100,			100,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
 														{"Hook Grip", 						100,		100,		100,		100,			100,	INACTIVE,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE},
-														{"Key Grip", 							100,		600,		600,		600,			600,		ACTIVE,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
+														{"Key Grip", 							100,		1000,		1000,		1000,			1000,		ACTIVE,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
 														{"Mouse Grip", 						100,		100,		100,		100,			100,	INACTIVE,		ACTIVE,	INACTIVE,	INACTIVE,	INACTIVE},
 														{"Finger Point Grip", 		100,		100,		100,		100,			100,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE,	INACTIVE}
 														};	
 //
 														
 int lastgrip = -1;
-float FSRmax = 3800.0;
+float FSRmax = 4000.0;
 
 void initGrip(void)
 {
-	int flag1, flag2, flag3, flag4, flag5;
-	flag1 = flag2 = flag3 = flag4 = flag5 = 1;
+//	int flag1, flag2, flag3, flag4, flag5;
+//	flag1 = flag2 = flag3 = flag4 = flag5 = 1;
+	uint32_t t1,t2,t21;
+	t1=t2=t21=0;
 	
+	t1=millis();
 	while(1)
 	{
-		if(ReadADC(Curr1) <= Curr1Threshold)
-			control_Finger(THUMB, CURL_OUT, 400);
+		t2= millis();
+		t21 = t2-t1;
+//		UARTprintf("\t\n%d",t21);
+		
+		if(t21 <= TimeThreshold)
+		{
+			control_Finger(THUMB, CURL_OUT, 900);
+			control_Finger(INDEX, CURL_OUT, 900);
+			control_Finger(MIDDLE, CURL_OUT, 900);
+			control_Finger(RING, CURL_OUT, 900);
+			control_Finger(PINKY, CURL_OUT, 900);
+		}
 		else
 		{
 			control_Finger(THUMB, CURL_OUT, 0);
-			flag1 = 0;
-		}
-		
-		if(ReadADC(Curr2) <= Curr2Threshold)
-			control_Finger(INDEX, CURL_OUT, 400);
-		else
-		{
-			control_Finger(INDEX, CURL_OUT, 0);
-			flag2 = 0;
-		}
-		
-		if(ReadADC(Curr3) <= Curr3Threshold)
-			control_Finger(MIDDLE, CURL_OUT, 400);
-		else
-		{
-			control_Finger(MIDDLE, CURL_OUT, 0);
-			flag3 = 0;
-		}
-		
-		if(ReadADC(Curr4) <= Curr4Threshold)
-			control_Finger(RING, CURL_OUT, 400);
-		else
-		{
+			control_Finger(INDEX, CURL_OUT, 0);		
+			control_Finger(MIDDLE, CURL_OUT, 0);		
 			control_Finger(RING, CURL_OUT, 0);
-			flag4 = 0;
-		}
-		
-		if(ReadADC(Curr5) <= Curr5Threshold)
-			control_Finger(PINKY, CURL_OUT, 400);
-		else
-		{
 			control_Finger(PINKY, CURL_OUT, 0);
-			flag5 = 0;
-		}
-		
-		if((flag1 + flag2 + flag3 + flag4 + flag5) == 0)
+			UARTprintf("\n Grip Initialized");
+			StopAllFinger();
 			break;
+		}			
 	}
 	InitEnoderVal();
 }
@@ -94,13 +78,17 @@ void makeGripException(struct gripName gripVal)
 {
 	int flag1, flag2;
 	flag1 = flag2 = 1;
+	uint32_t t1, t2, t21;
+	t1 = t2 = t21 = 0;
 	
 	UARTprintf("\n%s",gripVal.GripName);
 	
+	t1 = millis();
 	while(1)
 	{
-//		flag1 = control_Finger_Encoder(THUMB, gripVal);
-		flag1 = 0;
+		t2 = millis();
+		t21 = t2 - t1;
+		flag1 = control_Finger_Encoder(THUMB, gripVal);
 		flag2 = control_Finger_Encoder(INDEX, gripVal);
 		if(flag2 == 2)
 		{
@@ -115,73 +103,110 @@ void makeGripException(struct gripName gripVal)
 			control_Finger(PINKY,	CURL_OUT,	SPEED_MAX * gripVal.PinkyStatus);			
 		}
 		
-		if(flag1 + flag2 == 0)
+		if(flag1 + flag2 == 0 || (t2 > t1 && t21 > 2000))
 		{
 			StopAllFinger();
 			break;
 		}
 	}
+	UARTprintf(" Completed");
 }
 
 int RestOppGrip(void)
 {
-	makeGrip(grips[0]);
+	UARTprintf("\n Rest Opp Grip Begins");
+	makeGripException(grips[REST_OPP]);
+	lastgrip = REST_OPP;
 	return REST_OPP;
 }
 int PowerGrip(void)
 {
-	read_Enc_Fingers();
-	// make all fingers reach the reqd position
-	// 
 	UARTprintf("\n Power Grip Begins");
+	makeGripException(grips[POWER]);
+	lastgrip = POWER;
 	return POWER;
 }
 
 int TripodGrip(void)
 {
 	UARTprintf("\n Tripod Grip Begins");
+	makeGripException(grips[TRIPOD]);
+	lastgrip = TRIPOD;
 	return TRIPOD;
 }
 
 int ActiveIndexGrip(void)
 {
 	UARTprintf("\n Active Index Grip Begins");
+	lastgrip = ACTIVE_INDEX;
 	return ACTIVE_INDEX;
 }
 
 int PrecisionOpenGrip(void)
 {
 	UARTprintf("\n Precision Open Begins");
+	makeGripException(grips[PRECISION_OPEN]);
+	lastgrip = PRECISION_OPEN;
 	return PRECISION_OPEN;
 }
 
 
 int RestNoppGrip(void)
 {
+	lastgrip = REST_NOPP;
 	return REST_NOPP;
 }
 int HookGrip(void)
 {
 	UARTprintf("\n Hook Grip Begins");
-	//1. make fingers reach to a certain position
-	//2. Check for next signal
-	//3. Behave 
-	//4. Again step 2
+	makeGripException(grips[HOOK]);
+	lastgrip = HOOK;
 	return HOOK;
 }
 int KeyGrip(void)
 {
+		uint32_t t1, t2, t21;
+	t1 = t2 = t21 = 0;
 	UARTprintf("\n Key Grip Begins");
+		
+	t1 = t2 = millis();
+	while(t21 < 1500 && t2>= t1)
+	{
+		t2 = millis();
+		t21 = t2 - t1;
+		control_Finger(INDEX, 	CURL_IN, 900);
+		control_Finger(MIDDLE, 	CURL_IN, 900);
+		control_Finger(RING, 		CURL_IN, 900);
+		control_Finger(PINKY, 	CURL_IN, 900);
+	}
+	StopAllFinger();
+	lastgrip = KEY;
 	return KEY;
 }
 int MouseGrip(void)
 {
 	UARTprintf("\n Mouse Grip Begins");
+	makeGripException(grips[MOUSE]);
+	lastgrip = MOUSE;
 	return MOUSE;
 }
 int FingerPointGrip(void)
 {
+	uint32_t t1, t2, t21;
+	t1 = t2 = t21 = 0;
 	UARTprintf("\n Finger Point Grip Begins");
+		
+	t1 = t2 = millis();
+	while(t21 < 1500 && t2>= t1)
+	{
+		t2 = millis();
+		t21 = t2 - t1;
+		control_Finger(MIDDLE, 	CURL_IN, 900);
+		control_Finger(RING, 		CURL_IN, 900);
+		control_Finger(PINKY, 	CURL_IN, 900);
+	}
+	StopAllFinger();
+	lastgrip = FINGER_POINT;
 	return FINGER_POINT;
 }
 
@@ -190,12 +215,20 @@ void ProportionalGrip(int8_t GripVal, bool dir, uint16_t FSRadc)
 	struct gripName Currgrip = grips[GripVal];
 	int setPWM;
 	
-	setPWM = FSRadc/FSRmax * 500;
-		if (setPWM < 1)
-			setPWM = 1;
+	if(FSRadc <= 500)
+		setPWM = 0;
+	else if(FSRadc > 500 && FSRadc <= 2000)
+		setPWM = 850;
+	else if (FSRadc > 2000)
+		setPWM = 999;
 		
 	if(Currgrip.ThumbStatus == ACTIVE)
-		control_Finger(THUMB, dir, setPWM);
+	{
+		if(GripVal == POWER && dir == CURL_IN)
+			control_Finger(THUMB, dir, 750);
+		else
+			control_Finger(THUMB, dir, setPWM);
+	}
 	else
 		control_Finger(THUMB, dir, 0);
 	
@@ -224,4 +257,5 @@ void StopAllFinger(void)
 {
 	for(int i = 0; i < 5;i++)
 		control_Finger(i, CURL_IN, SPEED_MIN);
+	UARTprintf("\n Fingers Stoppped");
 }

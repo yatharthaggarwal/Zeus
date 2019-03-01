@@ -9,10 +9,10 @@
 #define RING			3
 #define PINKY			4
 
-#define CURL_IN 	1
-#define CURL_OUT	0
+#define CURL_IN 	0
+#define CURL_OUT	1
 
-#define SPEED_MAX	999
+#define SPEED_MAX	800
 #define SPEED_MIN	0
 
 extern uint32_t CurrFingerPulse[5];

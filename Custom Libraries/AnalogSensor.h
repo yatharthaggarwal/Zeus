@@ -4,7 +4,7 @@
 #include "Header.h"
 
 #define Curr1Threshold 200
-#define Curr2Threshold 200
+#define Curr2Threshold 190
 #define Curr3Threshold 200
 #define Curr4Threshold 200
 #define Curr5Threshold 200

@@ -4,6 +4,8 @@
 #define ACTIVE 1
 #define INACTIVE 0
 
+#define TimeThreshold 3500
+
 #include "Header.h"
 #include "string.h"
 

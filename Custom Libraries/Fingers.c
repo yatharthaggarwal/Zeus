@@ -22,6 +22,8 @@ void control_Finger(int fingernumber, bool fingerDirection, uint16_t fingerSpeed
 {
 		motorDirection((Phase)fingernumber, fingerDirection);
 		motorPWM((Enable)fingernumber, fingerSpeed);
+//		UARTprintf("\n%d", FingerPulses(fingernumber));
+//		UARTprintf("\t%d", ReadADC(fingernumber));
 }
 
 void control_Finger_Time(int fingernumber, bool fingerDirection,uint16_t fingerSpeed, int duration)
@@ -99,12 +101,12 @@ int control_Finger_Encoder(int fingernumber, struct gripName gripval)
 	val[3] = gripval.RingEncVal;
 	val[4] = gripval.PinkyEncVal;
 	
-	if(FingerPulses(fingernumber) <= ((encodeRef + val[fingernumber]) - 10))
+	if(FingerPulses(fingernumber) <= ((encodeRef + val[fingernumber]) - 50))
 	{
 		control_Finger(fingernumber, CURL_IN, SPEED_MAX);
 		return 2;
 	}
-	else if(FingerPulses(fingernumber) >= ((encodeRef + val[fingernumber]) + 10))
+	else if(FingerPulses(fingernumber) >= ((encodeRef + val[fingernumber]) + 50))
 	{
 		control_Finger(fingernumber, CURL_OUT, SPEED_MAX);
 		return 3;

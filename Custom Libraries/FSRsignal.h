@@ -15,16 +15,16 @@
 #define Long_Long   				22
 #define Short_Short_Short 	111
 
-#define Threshold1 					500
+#define Threshold1 					800
 
-#define Short_durMin				100			//milliseconds
+#define Short_durMin				150			//milliseconds
 #define Short_durMax				1000		//milliseconds
 #define Long_durMin					1000		//milliseconds
 #define Long_durMax					2000		//milliseconds
 
-#define Proportion_durBegin	1000		//milliseconds
+#define Proportion_durBegin	500		//milliseconds
 
-#define Signal_DurOverflow 	500			//milliseconds
+#define Signal_DurOverflow 	800			//milliseconds
 
 #define Active 							1	
 #define Passive							2

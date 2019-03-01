@@ -10,19 +10,31 @@ void ControlOpposed(void)
 	switch(classifiedSignal)
 	{
 		case Short_Short:
+			UARTprintf("\n Short-short detected");
 			if(lastgrip == REST_OPP)
+			{
 				PowerGrip();
 				ProportionalControl(POWER);
+				RestOppGrip();
+			}
 			break;
 	
 		case Short_Long:
 			if(lastgrip == REST_OPP)
+			{
 				TripodGrip();
+				ProportionalControl(TRIPOD);
+				RestOppGrip();
+			}
 			break;
 
 		case Long_Short:
 			if(lastgrip == REST_OPP)
+			{
 				PrecisionOpenGrip();
+				ProportionalControl(PRECISION_OPEN);
+				RestOppGrip();
+			}
 			break;
 			
 		case Short_Short_Short:
@@ -40,18 +52,31 @@ void ControlNonOpposed(void)
 	switch(classifiedSignal)
 	{
 		case Short_Short:
-			if(lastgrip == REST_NOPP)
+			if(lastgrip == REST_OPP)
+			{
 				HookGrip();
+				ProportionalControl(HOOK);
+				RestOppGrip();
+			}
 			break;
 	
 		case Short_Long:
-			if(lastgrip == REST_NOPP)
+			if(lastgrip == REST_OPP)
+			{
 				KeyGrip();
+				ProportionalControl(KEY);
+				RestOppGrip();
+			}
 			break;
 
 		case Long_Short:
-			if(lastgrip == REST_NOPP)
+			if(lastgrip == REST_OPP)
+			{
 				FingerPointGrip();
+				ProportionalControl(FINGER_POINT);
+				initGrip();
+				RestOppGrip();
+			}
 			break;
 			
 		case Short_Short_Short:

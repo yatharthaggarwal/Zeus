@@ -19,12 +19,12 @@ void initADC(void)
 	ADCSequenceConfigure(ADC0_BASE, 0, ADC_TRIGGER_PROCESSOR, 0);
 
 	ADCSequenceStepConfigure(ADC0_BASE, 0, 0, ADC_CTL_CH3);
-	ADCSequenceStepConfigure(ADC0_BASE, 0, 1, ADC_CTL_CH2);
+	ADCSequenceStepConfigure(ADC0_BASE, 0, 1, ADC_CTL_CH0);
 	ADCSequenceStepConfigure(ADC0_BASE, 0, 2, ADC_CTL_CH4);
 	ADCSequenceStepConfigure(ADC0_BASE, 0, 3, ADC_CTL_CH1);
-	ADCSequenceStepConfigure(ADC0_BASE, 0, 4, ADC_CTL_CH7);
-	ADCSequenceStepConfigure(ADC0_BASE, 0, 5, ADC_CTL_CH11);
-	ADCSequenceStepConfigure(ADC0_BASE, 0, 6, ADC_CTL_CH3);
+	ADCSequenceStepConfigure(ADC0_BASE, 0, 4, ADC_CTL_CH2);
+	ADCSequenceStepConfigure(ADC0_BASE, 0, 5, ADC_CTL_CH7);
+	ADCSequenceStepConfigure(ADC0_BASE, 0, 6, ADC_CTL_CH11);
 	ADCSequenceStepConfigure(ADC0_BASE, 0, 7, ADC_CTL_CH2 | ADC_CTL_IE | ADC_CTL_END);
 
 	ADCSequenceEnable(ADC0_BASE, 0);
@@ -52,6 +52,7 @@ uint16_t ReadADCChannel(Channel Ch)
 
 uint16_t ReadADC(Channel Ch)
 {
+	uint16_t sigval;
 	ADCIntClear(ADC0_BASE, 0);
 	ADCProcessorTrigger(ADC0_BASE, 0);
 	while(!ADCIntStatus(ADC0_BASE, 0, false))
@@ -59,7 +60,9 @@ uint16_t ReadADC(Channel Ch)
 	}
 	ADCSequenceDataGet(ADC0_BASE, 0, uiADCValue);
 	
-	return ReadADCChannel(Ch);
+	sigval = ReadADCChannel(Ch);
+	//UARTprintf("\n%d", sigval);
+	return sigval;
 }
 
 

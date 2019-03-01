@@ -49,16 +49,16 @@ void PortBIntHandler(void)
 
 void PortCIntHandler(void)
 {
-	if(GPIOIntStatus(GPIO_PORTC_BASE, false) & GPIO_PIN_6)
-	{
-		GPIOIntClear(GPIO_PORTC_BASE, GPIO_PIN_6);
-		if((GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7) >> 7) == CURL_IN)
-			countB3++ ;
-		else
-			countB3-- ;
-	}	
+//	if(GPIOIntStatus(GPIO_PORTC_BASE, false) & GPIO_PIN_6)
+//	{
+//		GPIOIntClear(GPIO_PORTC_BASE, GPIO_PIN_6);
+//		if((GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7) >> 7) == CURL_IN)
+//			countB3++ ;
+//		else
+//			countB3-- ;
+//	}	
 	
-	else if(GPIOIntStatus(GPIO_PORTC_BASE, false) & GPIO_PIN_7)
+	if(GPIOIntStatus(GPIO_PORTC_BASE, false) & GPIO_PIN_7)
 	{
 		GPIOIntClear(GPIO_PORTC_BASE, GPIO_PIN_7);
 		if((GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6) >> 6) == CURL_IN)
@@ -70,17 +70,17 @@ void PortCIntHandler(void)
 	
 void PortDIntHandler(void)
 {
-	if(GPIOIntStatus(GPIO_PORTD_BASE, false) & GPIO_PIN_1)
-	{
-		GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_1);
-		
-		if((GPIOPinRead(GPIO_PORTE_BASE, GPIO_PIN_5) >> 5) == CURL_IN)
-			countB4++ ;
-		else
-			countB4-- ;
-	}
+//	if(GPIOIntStatus(GPIO_PORTD_BASE, false) & GPIO_PIN_1)
+//	{
+//		GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_1);
+//		
+//		if((GPIOPinRead(GPIO_PORTE_BASE, GPIO_PIN_5) >> 5) == CURL_IN)
+//			countB4++ ;
+//		else
+//			countB4-- ;
+//	}
 	
-	else if(GPIOIntStatus(GPIO_PORTD_BASE, false) & GPIO_PIN_2)
+	if(GPIOIntStatus(GPIO_PORTD_BASE, false) & GPIO_PIN_2)
 	{
 		GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_2);
 		
@@ -90,15 +90,15 @@ void PortDIntHandler(void)
 			countB1-- ;
 	}
 	
-	else if(GPIOIntStatus(GPIO_PORTD_BASE, false) & GPIO_PIN_4)
-	{
-		GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_4);
-		
-		if((GPIOPinRead(GPIO_PORTD_BASE,GPIO_PIN_7) >> 7) == CURL_IN)
-			countB5++ ;
-		else
-			countB5-- ;
-	}
+//	else if(GPIOIntStatus(GPIO_PORTD_BASE, false) & GPIO_PIN_4)
+//	{
+//		GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_4);
+//		
+//		if((GPIOPinRead(GPIO_PORTD_BASE,GPIO_PIN_7) >> 7) == CURL_IN)
+//			countB5++ ;
+//		else
+//			countB5-- ;
+//	}
 }
 
 /*
@@ -198,5 +198,6 @@ uint32_t FingerPulses(int fingernumber)
 			Var = encodervalue(EncB5);
 			break;
 	}
+	
 	return Var;
 }
